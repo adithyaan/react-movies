@@ -17,6 +17,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { withRouter, Router, BrowserRouter, Route, Link } from 'react-router-dom'
 import history from './history';
+import Header from './header';
 
 const styles = {
     card: {
@@ -81,23 +82,13 @@ class Register extends Component {
     }
 
     routeChange(){
-      let path = './Movies';
+      let path = './main';
       history.push(path);
       }
     render() {
       return (
         <div style={styles.root}>
-         <AppBar position="static">
-          <Toolbar>
-            <IconButton className = "menuButton"color="inherit" aria-label="Menu">
-            </IconButton>
-            <Typography variant="h6" color="inherit" className="grow" >
-              News
-            </Typography>
-            <Button color="inherit">Login</Button>
-          </Toolbar>
-        </AppBar>
-  
+         <Header />
         <main style={styles.main} >
         <Paper style={styles.paper} >
           <Avatar >
@@ -140,7 +131,7 @@ class Register extends Component {
               fullWidth
               variant="contained"
               color="primary">
-              Sign in
+              Sign Up
             </Button>
           </form>
         </Paper>

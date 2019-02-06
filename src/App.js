@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import { OutlinedInput } from '@material-ui/core';
+import { OutlinedInput, Snackbar, CssBaseline } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -16,7 +16,10 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { withRouter } from 'react-router-dom';
-
+import Header from './header';
+import history from './history';
+import CloseIcon from '@material-ui/icons/Close';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
 
 const styles = {
   card: {
@@ -60,6 +63,7 @@ const styles = {
     display: 'block', // Fix IE 11 issue.
     marginLeft: 4 * 3,
     marginRight: 4* 3,
+    backgroudColor:'#D3D3D3	'
     
   },
 
@@ -69,8 +73,9 @@ class App extends Component {
   constructor(props){
     super(props);
     this.loginAttempt = this.loginAttempt.bind(this);
+    this.routeChange = this.routeChange.bind(this);
 
-    this.state={email:'',password:''}
+    this.state={email:'',password:'',open:false}
   }
   handleChange = (item) => {
     this.setState({[item.target.name]: item.target.value});
@@ -79,19 +84,34 @@ class App extends Component {
   render() {
     return (
       <div style={styles.root}>
-       <AppBar position="static">
-        <Toolbar>
-          <IconButton className = "menuButton"color="inherit" aria-label="Menu">
-          </IconButton>
-          <Typography variant="h6" color="inherit" className="grow" >
-            News
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar>
-
-      <main style={styles.main} >
-      <Paper style={styles.paper} >
+       <Header/>
+       {this.state.open &&
+       <SnackbarContent
+       style={{position: 'absolute',
+       left: '40%',top:'80%'}}
+        variant="error"
+        aria-describedby="client-snackbar"
+        message={
+        <span id="client-snackbar">
+          <IconButton />
+          Please check the credentials
+        </span>
+      }
+      action={[
+        <IconButton
+          key="close"
+          aria-label="Close"
+          color="inherit"
+         
+        >
+          <CloseIcon onClick={this.handleClose} />
+        </IconButton>,
+      ]}
+    />
+   }
+      <main>
+      <CssBaseline />
+      <Paper style={styles.paper} elevation={4} >
         <Avatar >
         </Avatar>
         <Typography component="h1" variant="h5">
@@ -129,7 +149,13 @@ class App extends Component {
       </div>
     );
   }
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
 
+    this.setState({ open: false });
+  };
   loginAttempt(){
     var url='http://192.168.139.71:8080/api/users/login';
     var details={'email':this.state.email,'password':this.state.password};
@@ -150,12 +176,29 @@ class App extends Component {
         console.log(JSON.stringify(response))
         localStorage.setItem('token',response.token)
         localStorage.setItem('userid',response.userid)
-        alert(localStorage.getItem('userid'))
-    })
+        localStorage.setItem('username',response.username)
+        localStorage.setItem('phonenumber',response.phonenumber)
+        localStorage.setItem('email',response.email)
+
+        if(response.hasOwnProperty('token')){
+          this.routeChange();
+        }
+        else{
+          this.handleClick();
+        }
+      })
     .catch((err) => {
         console.log(err);
     })
   }
+
+  handleClick = () => {
+    this.setState({ open: true });
+  };
+  routeChange(){
+    let path = './main';
+    history.push(path);
+    }
 }
 
 export default withRouter(App);

@@ -6,13 +6,15 @@ import App from './App';
 import Register from './Register';
 import * as serviceWorker from './serviceWorker';
 import history from './history';
-import Movies from './Movies';
+import Container from './Container';
+import Profile from './Profile';
 const Apps = () => (
     <Router history={history}>
       <Switch>
         <Route exact path="/" component={Register} />
         <Route path="/App" component={App} />      
-        <Route path="/movies" component={Movies} />      
+        <Route path="/main" component={Container} />      
+        <Route path="/profile" component={Profile} />      
 
       </Switch>
     </Router>
